@@ -17,8 +17,8 @@ class BottomNavBar extends StatelessWidget {
     List<Widget> _buildScreens() {
       return [
         AdminEventsView(),
+      AdminProfileBooking(),
         AdminTournamentsView(),
-        AdminProfileBooking(),
         AdminProfileView(),
       ];
     }
@@ -101,12 +101,25 @@ class BottomNavBar extends StatelessWidget {
       items: _navBarsItems(),
       controller: controller,
       confineInSafeArea: true,
-      backgroundColor: Colors.white38,
+      backgroundColor: Colors.white,
       handleAndroidBackButtonPress: true,
       resizeToAvoidBottomInset: true,
       stateManagement: true,
       hideNavigationBarWhenKeyboardShows: true,
       decoration: NavBarDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade800,
+            blurRadius: 15.0,
+            // has the effect of softening the shadow
+//                    spreadRadius: 2.0,
+            // has the effect of extending the shadow
+            offset: Offset(
+              1.0, // horizontal, move right 10
+              5.0, // vertical, move down 10
+            ),
+          )
+        ],
         borderRadius: BorderRadius.circular(10.0),
         colorBehindNavBar: Colors.white,
       ),
@@ -122,7 +135,7 @@ class BottomNavBar extends StatelessWidget {
         duration: Duration(milliseconds: 200),
       ),
       navBarStyle:
-      NavBarStyle.style3,//12,3,13,14,19
+      NavBarStyle.style19,//12,3,13,14,19
 
 
     );
