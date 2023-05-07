@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gradutionprojectadmin/adminEvents/eventcard/eventcardview.dart';
+import 'package:gradutionprojectadmin/adminEvents/eventdata/eventdata.dart';
 import 'package:gradutionprojectadmin/constant/constants.dart';
 class AdminEventsView extends StatefulWidget {
   _AnimatedAppBarState createState() => _AnimatedAppBarState();
@@ -15,7 +17,12 @@ class _AnimatedAppBarState extends State<AdminEventsView>
 
   var animation;
   var controller;
+  late List foundEvents;
+  void initState() {
+    super.initState();
 
+    _runFilter("");
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
@@ -65,9 +72,11 @@ class _AnimatedAppBarState extends State<AdminEventsView>
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(20))),
                 child:  SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
+                    padding: const EdgeInsets.only(bottom: 310.0),
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         SizedBox(height: 10,),
                         Container(
@@ -78,8 +87,8 @@ class _AnimatedAppBarState extends State<AdminEventsView>
                               borderRadius: BorderRadius.circular(30)
                           ),
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 20),
-                            child: Text('Current Tournaments',style: TextStyle(
+                            padding: const EdgeInsets.only(left: 40),
+                            child: Text('Current Events',style: TextStyle(
                                 color: Colors.white.withAlpha(240),
                                 fontSize: 15,
                                 fontWeight: FontWeight.w400
@@ -87,443 +96,51 @@ class _AnimatedAppBarState extends State<AdminEventsView>
                           ),
                         ),
                         SizedBox(height: 18,),
-                        Container(
-                          width: 310,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFf6f7f7),
-                          ),  child:  SingleChildScrollView(
-                          child: TextFormField(
-                            onChanged: (value) {
-                            },
-                            controller: editingController,
-                            decoration: InputDecoration(
 
-                                contentPadding: EdgeInsets.symmetric(vertical: 27),
-                                hintText: "Search Tournaments",
-                                hintStyle: TextStyle(color: Color(0xFFbdbcbc)),
-                                prefixIcon: Icon(Icons.search,color:Color(0xFFd8d8d8) ,),
-                                border:  OutlineInputBorder(
 
-                                    borderRadius: BorderRadius.circular(10)
-                                )),
+                    Container(
+                      width: 310,
+
+                      decoration: BoxDecoration(
+                        color: Color(0xFFf6f7f7),
+                      ),
+                      child: Form(
+                        child: TextFormField(
+                          onChanged: (value) => _runFilter(value),
+                          cursorColor: gradientColorA,
+                          decoration: InputDecoration(
+                            hintText: "Search Events",
+                            hintStyle: TextStyle(color: Color(0xFFbdbcbc)),
+                              border:  OutlineInputBorder(
+
+                                  borderRadius: BorderRadius.circular(10)
+                              ),
+                              contentPadding: EdgeInsets.symmetric(vertical: 27),
+
+                            hoverColor: gradientColorA,
+                            prefixIcon: Icon(Icons.search,color:Color(0xFFd8d8d8) ,),
                           ),
                         ),
-                        ),
+                      ),
+                    ),
+
+
                         SizedBox(height: 25,),
-
-                        /*Container(
-                          width: 310,
-                          decoration: BoxDecoration(
-                            color: Color(0xFFf6f7f7),
-*//*
-*//*
-                          ),
-                          child:  TextFormField(
-                            onChanged: (value) {
-                            },
-                            controller: editingController,
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(vertical: 3),
-                                hintText: "Search Tournaments",
-                                hintStyle: TextStyle(color: Color(0xFFbdbcbc)),
-                                prefixIcon: Icon(Icons.search,color:Color(0xFFd8d8d8) ,),
-                                border:  OutlineInputBorder(
-
-                                    borderRadius: BorderRadius.circular(10)
-                                )),
-                          ),
-                        ),*/
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament1',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Avaliable',style: TextStyle(
-                                        color: Color(0xFF92d190),
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Chess Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
+                        ListView.separated(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          scrollDirection: Axis.vertical,
+                          itemCount: foundEvents.length,
+                          itemBuilder: (context, index) {
+                            return EventCardWidget(
+                              foundEvent: foundEvents[index],
+                            );
+                          },
+                          separatorBuilder: (context, index) {
+                            return Divider(color: Colors.transparent,);
+                          },
                         ),
-                        SizedBox(height: 23,),
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment:MainAxisAlignment.start ,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
 
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament2',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Expired',style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Football Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
-                        ),
-                        SizedBox(height: 23,),
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment:MainAxisAlignment.start ,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament2',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Expired',style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Football Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
-                        ),
-                        SizedBox(height: 23,),
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment:MainAxisAlignment.start ,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament2',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Expired',style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Football Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
-                        ),
-                        SizedBox(height: 23,),
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment:MainAxisAlignment.start ,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament2',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Expired',style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Football Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
-                        ),
-                        SizedBox(height: 23,),
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment:MainAxisAlignment.start ,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament2',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Expired',style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Football Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
-                        ),
-                        SizedBox(height: 23,),
-                        Container(
-                          width: 315,
-                          height: 80,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 2, color: Color(0xFF98aaaf)),
-                              borderRadius: BorderRadius.all(Radius.circular(20))
-                          ),
-                          child: Row(
-                            mainAxisAlignment:MainAxisAlignment.start ,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 15),
-                                child: Column(
-
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Text('Tournament2',style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 16
-                                    ),),
-                                    Text('Date:12/03/2022',style: TextStyle(
-                                        letterSpacing: 2,
-                                        color: Color(0xFFb0b1ae),
-                                        fontSize: 10
-                                    ),),
-                                    Text('Expired',style: TextStyle(
-                                        color: Colors.red,
-                                        fontSize: 14
-                                    ))
-                                  ],
-                                ),),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: Text('Football Competiation',style: TextStyle(
-                                    color: Color(0xFFa5bbc3),
-                                    fontSize: 11
-                                ),),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 29),
-                                child: Container(
-                                  width: 35,
-                                  height: 35,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(80),
-                                      color: Colors.red
-                                  ),
-                                  child: Icon(Icons.delete,size: 26,color: Colors.white,),
-                                ),
-                              )
-                            ],
-
-                          ),
-
-                        ),
                       ],
                     ),
                   ),
@@ -533,7 +150,7 @@ class _AnimatedAppBarState extends State<AdminEventsView>
             Transform.translate(
               offset: const Offset(0.0, -305.0),
               child: Container(
-                child: Text('Created Tournaments',style: TextStyle(
+                child: Text('Created Events',style: TextStyle(
                     color: Colors.white.withAlpha(240),
                     fontSize: 17,
                     fontWeight: FontWeight.w500
@@ -562,7 +179,7 @@ class _AnimatedAppBarState extends State<AdminEventsView>
                             borderRadius: BorderRadius.circular(12)
                         ),
 
-                        child: Text('Add Tournament',style: TextStyle(
+                        child: Text('Add Events',style: TextStyle(
                             color: Color(0xFF93b1d2),
                             fontWeight: FontWeight.w500
                         ),))
@@ -574,4 +191,21 @@ class _AnimatedAppBarState extends State<AdminEventsView>
       ),
     );
   }
+
+  void _runFilter(String enteredKeyword) {
+    List<dynamic> results = [];
+    if (enteredKeyword.isEmpty ) {
+      results = events;
+    } else {
+      results = events
+          .where((place) =>
+          place.name.toLowerCase().contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      foundEvents = results;
+    });
+  }
+
 }
