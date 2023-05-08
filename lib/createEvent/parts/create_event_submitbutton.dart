@@ -17,25 +17,29 @@ class SubmitButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return Container(
-        margin: const EdgeInsets.only(top: 20),
-        width: double.infinity,
-        height:MediaQuery.of(context).size.height / 15,
-        child: ElevatedButton(
-            onPressed: () => _trySubmit(
-                context,
-                formKey,
-                categoryController.text,
-                titleController.text,
-                descriptionController.text,
-                image),
-            style: ElevatedButton.styleFrom(
-              primary: gradientColorA,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0),
+    return Transform.translate(
+      offset:Offset(0, 00) ,
+      child: Container(
+
+          margin: const EdgeInsets.only(top: 20),
+          width: double.infinity,
+          height:MediaQuery.of(context).size.height / 15,
+          child: ElevatedButton(
+              onPressed: () => _trySubmit(
+                  context,
+                  formKey,
+                  categoryController.text,
+                  titleController.text,
+                  descriptionController.text,
+                  image),
+              style: ElevatedButton.styleFrom(
+                primary: gradientColorA,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
               ),
-            ),
-            child: const Text("Submit")));
+              child: const Text("Submit"))),
+    );
   }
 
   void _trySubmit(

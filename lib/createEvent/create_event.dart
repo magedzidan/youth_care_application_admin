@@ -1,5 +1,5 @@
 library create_event.dart;
-
+import 'package:intl/intl.dart';
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:gradutionprojectadmin/constant/constants.dart';
 import 'package:gradutionprojectadmin/createEvent/widgets/custom_appbar.dart';
 import 'package:gradutionprojectadmin/createEvent/widgets/mytext.dart';
+import 'package:string_extensions/string_extensions.dart';
 
 import 'package:image_picker/image_picker.dart';
 
@@ -53,6 +54,41 @@ class _CreateEventState extends State<CreateEvent> {
     getCategories();
 
     super.initState();
+    _timeC.text='00:00 AM';
+
+  }
+
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+
+  TimeOfDay timeOfDay = TimeOfDay.now();
+  final _timeC = TextEditingController();
+
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2030));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  Future displayTimePicker(BuildContext context) async {
+    var time = await showTimePicker(
+        context: context,
+        initialTime: timeOfDay);
+
+    if (time != null) {
+      setState(() {
+        _timeC.text = "${time.hour}:${time.minute} " ;
+        _timeC.text+="${time.period}".split('.')[1].toUpperCase();
+      });
+    }
   }
 
   @override
@@ -73,7 +109,7 @@ class _CreateEventState extends State<CreateEvent> {
                 child: SingleChildScrollView(
                   child: Padding(
                     padding:
-                        const EdgeInsets.only(top: 60, left: 10, right: 10),
+                        const EdgeInsets.only(top: 20, left: 10, right: 10),
                     child: Column(
                       children: [
                         Column(
@@ -88,6 +124,70 @@ class _CreateEventState extends State<CreateEvent> {
                             EventDescriptionContent(
                               descriptionController: descriptionController,
                             ),
+
+                    Container(
+/*
+                      margin: const EdgeInsets.only(top: 20),
+*/
+/*
+                      padding:  const EdgeInsets.only(top: 30),
+*/
+                      child:Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                              onTap: ()=>_selectDate(context),
+                              child: Container(
+                                color: Color(0xFFf2f3f1),
+                                height: 50,
+                                width:170,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Row(
+
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("${selectedDate.toLocal()}".split(' ')[0],style: TextStyle(
+                                          fontSize: 17,
+                                          color:  Color(0xFF4f4e4e)
+                                      ),),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 6),
+                                        child: Icon(Icons.calendar_month,color: Color(0xFF787676),),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                          ),
+                          GestureDetector(
+                              onTap: ()=>displayTimePicker(context),
+                              child: Container(
+                                color: Color(0xFFf2f3f1),
+                                height: 50,
+                                width:170,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 13),
+                                  child: Row(
+
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(_timeC.text,style: TextStyle(
+                                          fontSize: 17,
+                                          color:  Color(0xFF4f4e4e)
+                                      ),),
+                                      Padding(
+                                        padding: const EdgeInsets.only(right: 6),
+                                        child: Icon(Icons.watch_later_rounded,color: Color(0xFF787676),),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              )
+                          )
+                        ],
+                      ) ,
+                    ),
 
                             selectCategory(),
                           ],
@@ -115,7 +215,7 @@ class _CreateEventState extends State<CreateEvent> {
 
   Container selectCategory() {
     return Container(
-      margin: const EdgeInsets.only(top: 20, left: 10),
+      margin: const EdgeInsets.only(top: 30, left: 10),
       padding: const EdgeInsets.only(left: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10),

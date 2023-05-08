@@ -90,6 +90,7 @@ dev_dependencies:
   wave: ^0.2.0
   line_icons: ^2.0.1
   uuid: ^3.0.5
+  string_extensions: ^0.6.3
 
 
 # For information on the generic Dart part of this file, see the
