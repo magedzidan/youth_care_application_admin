@@ -82,6 +82,14 @@ dev_dependencies:
   jiffy: ^5.0.0
   font_awesome_flutter: ^9.2.0
   carousel_slider: ^4.2.1
+  flutter_bloc: ^8.0.1
+  geocoding: ^2.0.2
+  geolocator: ^8.1.1
+  image_picker: ^0.8.4+4
+  intro_slider: ^3.0.3
+  wave: ^0.2.0
+  line_icons: ^2.0.1
+  uuid: ^3.0.5
 
 
 # For information on the generic Dart part of this file, see the

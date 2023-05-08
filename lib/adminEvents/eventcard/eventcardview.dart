@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gradutionprojectadmin/adminEvents/event_model.dart';
+import 'package:gradutionprojectadmin/constant/constants.dart';
 
 class EventCardWidget extends StatelessWidget {
   EventCardWidget({
@@ -15,7 +16,7 @@ class EventCardWidget extends StatelessWidget {
         width: 315,
         height: 80,
         decoration: BoxDecoration(
-            border: Border.all(width: 2, color: Color(0xFF98aaaf)),
+            border: Border.all(width: 2, color: adminprimarycolor),
             borderRadius: BorderRadius.all(Radius.circular(20))
         ),
         child: Row(
@@ -28,7 +29,7 @@ class EventCardWidget extends StatelessWidget {
                 height: 80,
                 child: Image.network(
                   foundEvent.image,
-                  fit: BoxFit.contain,
+                  fit: BoxFit.fitHeight,
                 ),
               ),
             ),
@@ -57,7 +58,7 @@ class EventCardWidget extends StatelessWidget {
                       fontSize: 10
                   ),),
                   Text('Avaliable',style: TextStyle(
-                      color: Color(0xFF92d190),
+                      color: primarycolor,
                       fontSize: 14
                   ))
                 ],

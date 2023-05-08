@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:get/get.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:gradutionprojectadmin/adminEvents/eventcard/eventcardview.dart';
 import 'package:gradutionprojectadmin/adminEvents/eventdata/eventdata.dart';
 import 'package:gradutionprojectadmin/constant/constants.dart';
+import 'package:gradutionprojectadmin/createEvent/create_event.dart';
 class AdminEventsView extends StatefulWidget {
   _AnimatedAppBarState createState() => _AnimatedAppBarState();
 }
@@ -161,28 +163,33 @@ class _AnimatedAppBarState extends State<AdminEventsView>
 
             Transform.translate(
                 offset: const Offset(0.0, 300.0),
-                child: Container(
-                    alignment: Alignment.center,
-                    height: 65,
-                    width: 336,
-                    decoration: BoxDecoration(
-                        color: Color(0xFF4e77ab),
-                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(20),
-                            bottomLeft: Radius.circular(20))
-                    ),
-                    child: Container(
-                        alignment: Alignment.center,
-                        height: 40,
-                        width: 150,
-                        decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12)
-                        ),
+                child: GestureDetector(
+                  onTap: (){
+                    Get.to(()=>CreateEvent());
+                  },
+                  child: Container(
+                      alignment: Alignment.center,
+                      height: 65,
+                      width: 336,
+                      decoration: BoxDecoration(
+                          color: Color(0xFF4e77ab),
+                          borderRadius: BorderRadius.only(bottomRight: Radius.circular(20),
+                              bottomLeft: Radius.circular(20))
+                      ),
+                      child: Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          width: 150,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12)
+                          ),
 
-                        child: Text('Add Events',style: TextStyle(
-                            color: Color(0xFF93b1d2),
-                            fontWeight: FontWeight.w500
-                        ),))
+                          child: Text('Add Events',style: TextStyle(
+                              color: adminprimarycolor,
+                              fontWeight: FontWeight.w500
+                          ),))
+                  ),
                 )
             )
 
